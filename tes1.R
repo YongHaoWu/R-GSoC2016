@@ -54,8 +54,8 @@ easytest.fun <- function() {
     N.times <- microbenchmark::microbenchmark(
       #    STR_MAT = str_match_all_named(core_contents, pattern_animation),
       ICU=stringi::stri_match_all(core_contents, regex=simple_pattern),
-      PCRE=gregexpr(pattern_animation, core_contents, perl=TRUE),
-      TRE=gregexpr(simple_pattern, core_contents, perl=FALSE),
+      PCRE=regexpr(pattern_animation, core_contents, perl=TRUE),
+      TRE=regexpr(simple_pattern, core_contents, perl=FALSE),
       times=7)
     times.list[[N]] <- data.frame(N, N.times)
   }

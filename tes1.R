@@ -45,7 +45,7 @@ animation_single_contents
 animation_contents <- str_match_all_named(core_contents, pattern_animation)
 animation_contents
 
-max.N <- 6
+max.N <- 25
 times.list <- list()
 for(N in 1:max.N) {
   cat(sprintf("subject size %4d / %4d\n", N, max.N))
@@ -57,7 +57,7 @@ for(N in 1:max.N) {
     ICU=stringi::stri_match_all(N_contents, regex=simple_pattern),
     PCRE=regexpr(pattern_animation, N_contents, perl=TRUE),
     TRE=regexpr(simple_pattern, N_contents, perl=FALSE),
-    times=7)
+    times=10)
   times.list[[N]] <- data.frame(N, N.times)
 }
 times <- do.call(rbind, times.list)
@@ -67,8 +67,8 @@ linear.legend <- ggplot()+
   ggtitle("Timing regular expressions in R, linear scale")+
   scale_y_continuous("seconds")+
   scale_x_continuous("subject/pattern size",
-                     limits=c(1, 8),
-                     breaks=c(1, 2, 3, 4, 5, 6))+
+                     limits=c(1, 27),
+                     breaks=c(1, 5, 10, 15, 20, 25))+
   geom_point(aes(N, time/1e9, color=expr),
              shape=1,
              data=times)
@@ -81,8 +81,8 @@ log.legend <- ggplot()+
   ggtitle("Timing regular expressions in R, log scale")+
   scale_y_log10("seconds")+
   scale_x_log10("subject/pattern size",
-                limits=c(1, 8),
-                breaks=c(1, 2, 3, 4, 5, 6))+
+                limits=c(1, 27),
+                breaks=c(1, 5, 10, 15, 20, 25))+
   geom_point(aes(N, time/1e9, color=expr),
              shape=1,
              data=times)

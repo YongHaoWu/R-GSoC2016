@@ -1,11 +1,27 @@
 tests <- "ABabóćąęłń81241ĄĆĘŁŃÓŚŹŻ!#$%&'()*+,-./:;<=>?@[]^_`{|}~"
 #patterns <- "[Ęźż]"
-patterns <- c("[[:digit:]]", "[A-Z]", "[[:lower:]]", 
-              "[[:upper:]]", "[[:punct:]]","[[:alpha:]]")
-correct_results <- c("81241", "AB", "abóćąęłń", 
-           "ABĄĆĘŁŃÓŚŹŻ", "!#%&'()*,-./:;?@[]_{}",
-           "ABabóćąęłńĄĆĘŁŃÓŚŹŻ"
-           )
+
+## You should use a data.frame to clarify the for loop below.
+pattern.df <- data.frame(
+  pattern=c("[[:digit:]]", "[A-Z]", "[[:lower:]]", 
+    "[[:upper:]]", "[[:punct:]]","[[:alpha:]]"),
+  correct_result=c("81241", "AB", "abóćąęłń", 
+    "ABĄĆĘŁŃÓŚŹŻ", "!#%&'()*,-./:;?@[]_{}",
+    "ABabóćąęłńĄĆĘŁŃÓŚŹŻ"),
+  stringsAsFactors=FALSE)
+
+## You can further clarify your code by putting the pattern and the
+## expected result on the same line of code:
+pattern.correct <- function(pattern, correct_result){
+  data.frame(pattern, correct_result, stringsAsFactors=FALSE)
+}
+pattern.df <- rbind(
+  pattern.correct("[[:digit:]]", "81241"),
+  pattern.correct("[A-Z]", "AB"),
+  pattern.correct("[[:lower:]]",  "abóćąęłń"),
+  pattern.correct("[[:upper:]]", "ABĄĆĘŁŃÓŚŹŻ"),
+  pattern.correct("[[:punct:]]", "!#%&'()*,-./:;?@[]_{}"),
+  pattern.correct("[[:alpha:]]", "ABabóćąęłńĄĆĘŁŃÓŚŹŻ"))
 
 getcontentsofTRE <- function(s,g) {
   substring(s, g[1], g[1]+sum(attr(g, 'match.length')) -1)
@@ -73,22 +89,15 @@ test_ICU_normalize <- function(patterns, correct_res) {
   }
 }
 
-i<-1
-for(pattern in patterns) {
-  test_PCRE(pattern, correct_results[i])
-  test_PCRE_normalized(pattern, correct_results[i])
-  test_TCRE(pattern, correct_results[i])
-  test_TCRE_normalized(pattern, correct_results[i])
-  test_ICU(pattern , correct_results[i])
-  test_ICU_normalize(pattern , correct_results[i])
-  i <- i+1
-}
-
-i<-1
-for(pattern in patterns) {
-  test_PCRE_normalized(pattern, correct_results[i])
-  test_TCRE_normalized(pattern, correct_results[i])
-  test_ICU_normalize(pattern , correct_results[i])
-  i <- i+1
+for(row.i in seq_along(pattern.df$pattern)) {
+  pattern.row <- pattern.df[row.i, ]
+  pattern <- pattern.row$pattern
+  correct_result <- pattern.row$correct_result
+  test_PCRE(pattern, correct_result)
+  test_PCRE_normalized(pattern, correct_result)
+  test_TCRE(pattern, correct_result)
+  test_TCRE_normalized(pattern, correct_result)
+  test_ICU(pattern, correct_result)
+  test_ICU_normalize(pattern, correct_result)
 }
 

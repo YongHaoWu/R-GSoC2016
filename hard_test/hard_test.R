@@ -11,5 +11,7 @@ cppFunction('long int w_GCD( long int a, long int b) {
 w_GCD
 w_GCD(312140238, 13121223438)
 
-
-
+path <- getwd()
+path <- paste0(path, '/hard_test/rcpp.cpp')
+path
+sourceCpp(path)
